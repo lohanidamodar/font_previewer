@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_previewer/widgets/font_picker_dialog.dart';
 
 typedef OnTapFontType = Function(String);
 
@@ -20,7 +21,17 @@ class _FontTypeListState extends State<FontTypeList> {
           onTap: () => widget.onTapFontType('google'),
         ),
         Center(
-          child: ElevatedButton(onPressed: () {}, child: Text("Add my fonts")),
+          child: ElevatedButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        child: FontPickerDialog(),
+                      );
+                    });
+              },
+              child: Text("Add my fonts")),
         ),
       ],
     );
