@@ -7,6 +7,7 @@ class FontPreviewApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Font preview",
       home: HomeDesktopScreen(),
     );
