@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   file_picker: ^8.3.1
   google_fonts: ^6.2.1
+  path: ^1.9.0
+  shared_preferences: ^2.5.1
 
 dev_dependencies:
   flutter_test:

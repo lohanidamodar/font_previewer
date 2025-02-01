@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_previewer/models/font_family.dart';
 import 'package:font_previewer/widgets/font_preview_list.dart';
 
 class FontPreviewContainer extends StatefulWidget {
-  final Iterable<String> fontFamilies;
+  final Iterable<FontFamily> fontFamilies;
   const FontPreviewContainer({super.key, required this.fontFamilies});
 
   @override
