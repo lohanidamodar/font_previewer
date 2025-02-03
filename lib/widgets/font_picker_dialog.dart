@@ -88,6 +88,10 @@ class _FontPickerDialogState extends State<FontPickerDialog> {
               ),
             ],
           ),
+          if (fontFiles.isNotEmpty) ...[
+            const SizedBox(height: 10.0),
+            Text("Fonts found: ${fontFiles.length}")
+          ],
           const SizedBox(height: 10.0),
           ElevatedButton(
             onPressed:

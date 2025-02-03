@@ -30,6 +30,14 @@ class _FontTypeListState extends State<FontTypeList> {
     setState(() {});
   }
 
+  _removeFontLibrary(String key) async {
+    final sp = await SharedPreferencesWithCache.create(
+        cacheOptions: SharedPreferencesWithCacheOptions());
+    fontLibrary.remove(key);
+    sp.setString('font_library', jsonEncode(fontLibrary));
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -42,6 +50,12 @@ class _FontTypeListState extends State<FontTypeList> {
               key: ValueKey(key),
               title: Text(fontLibrary[key]['name'] ?? ''),
               onTap: () => widget.onTapFontType(key),
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  _removeFontLibrary(key);
+                },
+              ),
             )),
         Center(
           child: ElevatedButton(
