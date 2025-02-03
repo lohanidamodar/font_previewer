@@ -43,17 +43,54 @@ class _FontTypeListState extends State<FontTypeList> {
     return ListView(
       children: [
         ListTile(
-          title: Text("Google fonts"),
+          title: Text(
+            "Google fonts",
+            style: TextStyle(
+              fontSize: 18.0,
+              color: Colors.white,
+            ),
+          ),
           onTap: () => widget.onTapFontType('google'),
         ),
         ...fontLibrary.keys.map((key) => ListTile(
               key: ValueKey(key),
-              title: Text(fontLibrary[key]['name'] ?? ''),
+              title: Text(
+                fontLibrary[key]['name'] ?? '',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                ),
+              ),
               onTap: () => widget.onTapFontType(key),
               trailing: IconButton(
+                color: Colors.white,
                 icon: Icon(Icons.delete),
-                onPressed: () {
-                  _removeFontLibrary(key);
+                onPressed: () async {
+                  final remove = await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Remove?"),
+                          content: Text("Are you sure you want to remove?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, false);
+                              },
+                              child: Text("No"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                              },
+                              child: Text("Yes, remove"),
+                            ),
+                          ],
+                        );
+                      });
+                  if (remove ?? false) {
+                    _removeFontLibrary(key);
+                  }
                 },
               ),
             )),
