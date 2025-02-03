@@ -68,11 +68,26 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(children: [
-        Container(
+        Ink(
           width: 240,
           color: Colors.blueGrey,
-          child: FontTypeList(
-            onTapFontType: onTypeSelected,
+          child: Column(
+            children: [
+              Expanded(
+                child: FontTypeList(
+                  onTapFontType: onTypeSelected,
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  "Settings",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () {},
+              )
+            ],
           ),
         ),
         Expanded(
