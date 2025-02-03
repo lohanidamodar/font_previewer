@@ -1,3 +1,5 @@
-# font_previewer
+# Preview your fonts easily
 
-A new Flutter project.
+Easily preview fonts you have locally or Google fonts.
+
+![Preview](screenshots/font_previewer_nlf0sfqGZ6.png)
