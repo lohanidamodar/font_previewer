@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_previewer/models/font_family.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:path/path.dart' as p;
@@ -56,6 +59,52 @@ class FontPreviewList extends StatelessWidget {
                                 fontFamilies.elementAt(index).name]
                             ?.call()
                             .copyWith(fontSize: fontSize)),
+              ),
+              IconButton(
+                onPressed: () async {
+                  // copy to favorite
+                  final details = fontFamilies.elementAt(index);
+                  if (details.isLocal) {
+                    final path = details.path;
+
+                    final name = p.basename(path);
+                    final file = File(path);
+                    if (!file.existsSync()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("The file does not exist")));
+                      return;
+                    }
+                    final sp = await SharedPreferencesWithCache.create(
+                        cacheOptions: SharedPreferencesWithCacheOptions());
+
+                    final favoriteDir = sp.getString('favourites') ?? '';
+                    if (favoriteDir.isEmpty && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              "Favorite directory is not set. Set from settings")));
+                      return;
+                    }
+                    final content = file.readAsBytesSync();
+                    final destPath = p.join(favoriteDir, name);
+                    final destFile = File(destPath);
+                    try {
+                      destFile.writeAsBytesSync(content);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Successfully added to favorites")));
+                        return;
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                "Unable to write to favorites. Error: ${e.toString()}")));
+                        return;
+                      }
+                    }
+                  }
+                },
+                icon: Icon(Icons.favorite),
               ),
             ],
           ),

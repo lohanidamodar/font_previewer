@@ -39,13 +39,13 @@ class _SetFavoriteDialogState extends State<SetFavoriteDialog> {
   }
 
   addTolibrary() async {
-    if (selectedDirectory.isEmpty) {
+    if (_controller.text.isEmpty) {
       return;
     }
     final sp = await SharedPreferencesWithCache.create(
         cacheOptions: SharedPreferencesWithCacheOptions());
 
-    await sp.setString('favourites', selectedDirectory);
+    await sp.setString('favourites', _controller.text);
     if (mounted) {
       Navigator.pop(context, true);
     }
@@ -78,7 +78,7 @@ class _SetFavoriteDialogState extends State<SetFavoriteDialog> {
           ),
           const SizedBox(height: 10.0),
           ElevatedButton(
-            onPressed: selectedDirectory.isNotEmpty ? addTolibrary : null,
+            onPressed: _controller.text.isNotEmpty ? addTolibrary : null,
             child: Text("Save"),
           ),
         ],
