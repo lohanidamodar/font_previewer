@@ -16,6 +16,7 @@ class FontTypeList extends StatefulWidget {
 
 class _FontTypeListState extends State<FontTypeList> {
   Map<String, dynamic> fontLibrary = {};
+  String favoritesPath = '';
   @override
   void initState() {
     super.initState();
@@ -27,6 +28,8 @@ class _FontTypeListState extends State<FontTypeList> {
         cacheOptions: SharedPreferencesWithCacheOptions());
     final existing = sp.getString('font_library');
     fontLibrary = jsonDecode(existing ?? '{}');
+
+    favoritesPath = sp.getString('favourites') ?? '';
     setState(() {});
   }
 
@@ -42,6 +45,18 @@ class _FontTypeListState extends State<FontTypeList> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
+        if (favoritesPath.isNotEmpty) ...[
+          ListTile(
+            title: Text(
+              "Favorites",
+              style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.white,
+              ),
+            ),
+            onTap: () => widget.onTapFontType('favourites'),
+          ),
+        ],
         ListTile(
           title: Text(
             "Google fonts",

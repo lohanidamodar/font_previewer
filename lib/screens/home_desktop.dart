@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_previewer/models/font_family.dart';
 import 'package:font_previewer/widgets/font_preview_container.dart';
 import 'package:font_previewer/widgets/font_type_list.dart';
+import 'package:font_previewer/widgets/set_favorite_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,27 +30,48 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
           fontFamilies.add(FontFamily(name: font, path: font, isLocal: false));
         }
         break;
+      case 'favourites':
+        loadFontsFromFolder();
+        break;
       default:
-        loadFonts(type);
+        loadFontsFromType(type);
         break;
     }
 
     setState(() {});
   }
 
-  loadFonts(String type) async {
+  loadFontsFromFolder() async {
     final sp = await SharedPreferencesWithCache.create(
         cacheOptions: SharedPreferencesWithCacheOptions());
-    final existing = sp.getString('font_library');
-    final fontLibrary = jsonDecode(existing ?? '{}');
-    final fonts = List<String>.from(fontLibrary[type]['fonts'] ?? []);
 
+    final favoritesPath = sp.getString('favourites') ?? '';
+    if (favoritesPath.isEmpty) {
+      return;
+    }
+    final fontFiles = <String>[];
+    final dir = Directory.fromUri(Uri.file(favoritesPath));
+    final items = dir.listSync(recursive: true);
+    for (final item in items) {
+      if (item.statSync().type == FileSystemEntityType.file) {
+        final file = File.fromUri(item.uri);
+        final extension = p.extension(item.path);
+        if (extension != '.ttf' && extension != '.otf') {
+          continue;
+        }
+        fontFiles.add(file.path);
+      }
+    }
+
+    loadFontsFromFiles(fontFiles, 'favourites');
+  }
+
+  loadFontsFromFiles(List<String> fonts, String name) async {
     if (fonts.isEmpty) {
       return;
     }
 
     int index = 0;
-    final name = fontLibrary[type]['name'] ?? type;
     for (final path in fonts) {
       final fontFile = File(path);
       if (fontFile.existsSync()) {
@@ -62,6 +85,16 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
       }
     }
     setState(() {});
+  }
+
+  loadFontsFromType(String type) async {
+    final sp = await SharedPreferencesWithCache.create(
+        cacheOptions: SharedPreferencesWithCacheOptions());
+    final existing = sp.getString('font_library');
+    final fontLibrary = jsonDecode(existing ?? '{}');
+    final fonts = List<String>.from(fontLibrary[type]['fonts'] ?? []);
+    final name = fontLibrary[type]['name'] ?? type;
+    loadFontsFromFiles(fonts, name);
   }
 
   @override
@@ -85,7 +118,18 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
                     color: Colors.white,
                   ),
                 ),
-                onTap: () {},
+                onTap: () async {
+                  final saved = await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: SetFavoriteDialog(),
+                        );
+                      });
+                  if (saved ?? false) {
+                    setState(() {});
+                  }
+                },
               )
             ],
           ),
