@@ -20,9 +20,12 @@ class HomeDesktopScreen extends StatefulWidget {
 
 class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
   List<FontFamily> fontFamilies = [];
+  // Map to track loaded fonts to prevent reloading
+  final Map<String, bool> _loadedFonts = {};
 
   onTypeSelected(String type) {
     fontFamilies = [];
+    _loadedFonts.clear();
     switch (type) {
       case 'google':
         final googleFonts = GoogleFonts.asMap().keys.toList();
@@ -66,6 +69,7 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
     loadFontsFromFiles(fontFiles, 'favourites');
   }
 
+  // Modified to only collect metadata without loading the fonts
   loadFontsFromFiles(List<String> fonts, String name) async {
     if (fonts.isEmpty) {
       return;
@@ -76,15 +80,40 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
       final fontFile = File(path);
       if (fontFile.existsSync()) {
         final family = '$name$index';
-        final data = ByteData.sublistView(fontFile.readAsBytesSync());
-        final loader = FontLoader(family);
-        loader.addFont(Future.value(data));
-        await loader.load();
-        fontFamilies.add(FontFamily(name: family, path: path));
+        // Store metadata but don't load the font yet
+        fontFamilies.add(
+          FontFamily(
+            name: family,
+            path: path,
+            isLocal: true,
+            loadFont: () => loadFontOnDemand(family, path),
+          ),
+        );
         index++;
       }
     }
     setState(() {});
+  }
+
+  // New method to load a font only when needed
+  Future<void> loadFontOnDemand(String family, String path) async {
+    // Check if font is already loaded
+    if (_loadedFonts[family] == true) {
+      return;
+    }
+
+    try {
+      final fontFile = File(path);
+      if (fontFile.existsSync()) {
+        final data = ByteData.sublistView(fontFile.readAsBytesSync());
+        final loader = FontLoader(family);
+        loader.addFont(Future.value(data));
+        await loader.load();
+        _loadedFonts[family] = true;
+      }
+    } catch (e) {
+      debugPrint('Error loading font $family: $e');
+    }
   }
 
   loadFontsFromType(String type) async {
