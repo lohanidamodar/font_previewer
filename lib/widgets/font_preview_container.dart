@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_previewer/models/font_family.dart';
+import 'package:font_previewer/services/font_download_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as path;
 import 'package:url_launcher/url_launcher.dart';
@@ -69,6 +70,17 @@ class _FontPreviewContainerState extends State<FontPreviewContainer> {
     } catch (e) {
       debugPrint('Error opening font location: $e');
     }
+  }
+
+  Future<void> _downloadGoogleFont(String fontFamily) async {
+    // Show loading indicator
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+          content: Text('Downloading font...'), duration: Duration(seconds: 1)),
+    );
+
+    // Attempt to download the font
+    await FontDownloadService.downloadGoogleFont(fontFamily, context: context);
   }
 
   void _increaseFontSize() {
@@ -169,6 +181,13 @@ class _FontPreviewContainerState extends State<FontPreviewContainer> {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
+                    // Add download button for Google Fonts only
+                    if (!font.isLocal)
+                      IconButton(
+                        icon: const Icon(Icons.download),
+                        onPressed: () => _downloadGoogleFont(font.name),
+                        tooltip: 'Download font',
+                      ),
                     IconButton(
                       icon: Icon(font.isLocal ? Icons.folder_open : Icons.link),
                       onPressed: () {
