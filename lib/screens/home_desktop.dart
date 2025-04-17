@@ -22,10 +22,15 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
   List<FontFamily> fontFamilies = [];
   // Map to track loaded fonts to prevent reloading
   final Map<String, bool> _loadedFonts = {};
+  // Track the selected font type
+  String _selectedFontType = '';
 
   onTypeSelected(String type) {
     fontFamilies = [];
     _loadedFonts.clear();
+    // Update the selected font type
+    _selectedFontType = type;
+
     switch (type) {
       case 'google':
         final googleFonts = GoogleFonts.asMap().keys.toList();
@@ -138,6 +143,8 @@ class _HomeDesktopScreenState extends State<HomeDesktopScreen> {
               Expanded(
                 child: FontTypeList(
                   onTapFontType: onTypeSelected,
+                  selectedType:
+                      _selectedFontType, // Pass the selected font type
                 ),
               ),
               ListTile(

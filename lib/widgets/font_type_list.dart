@@ -8,7 +8,9 @@ typedef OnTapFontType = Function(String);
 
 class FontTypeList extends StatefulWidget {
   final OnTapFontType onTapFontType;
-  const FontTypeList({super.key, required this.onTapFontType});
+  final String selectedType;
+  const FontTypeList(
+      {super.key, required this.onTapFontType, required this.selectedType});
 
   @override
   State<FontTypeList> createState() => _FontTypeListState();
@@ -47,6 +49,7 @@ class _FontTypeListState extends State<FontTypeList> {
       children: [
         if (favoritesPath.isNotEmpty) ...[
           ListTile(
+            selected: widget.selectedType == 'favourites',
             title: Text(
               "Favorites",
               style: TextStyle(
@@ -58,6 +61,7 @@ class _FontTypeListState extends State<FontTypeList> {
           ),
         ],
         ListTile(
+          selected: widget.selectedType == 'google',
           title: Text(
             "Google fonts",
             style: TextStyle(
@@ -69,6 +73,7 @@ class _FontTypeListState extends State<FontTypeList> {
         ),
         ...fontLibrary.keys.map((key) => ListTile(
               key: ValueKey(key),
+              selected: widget.selectedType == key,
               title: Text(
                 fontLibrary[key]['name'] ?? '',
                 style: TextStyle(

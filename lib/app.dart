@@ -9,6 +9,11 @@ class FontPreviewApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Font preview",
+      theme: ThemeData.light().copyWith(
+          listTileTheme: ListTileThemeData(
+        selectedColor: Colors.amber,
+        selectedTileColor: Colors.amber.withAlpha(30),
+      )),
       home: HomeDesktopScreen(),
     );
   }
