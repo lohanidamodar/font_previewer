@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
@@ -156,8 +155,6 @@ class FontDownloadService {
 
       // Create zip file at the final destination
       final String zipFilePath = path.join(saveDirectory, zipName);
-      await _createArchiveWithFolderStructure(
-          fontFamilyDir, downloadedFilePaths, zipFilePath);
 
       // Show success message
       if (context != null && context.mounted) {
@@ -184,32 +181,6 @@ class FontDownloadService {
 
       return null;
     }
-  }
-
-  // Create a zip file preserving the directory structure
-  static Future<void> _createArchiveWithFolderStructure(
-      String basePath, List<String> filePaths, String zipFilePath) async {
-    final Archive archive = Archive();
-
-    for (final String filePath in filePaths) {
-      final File file = File(filePath);
-      if (await file.exists()) {
-        final List<int> fileBytes = await file.readAsBytes();
-
-        // Preserve directory structure by getting path relative to base temp dir
-        String archivePath = filePath.substring(basePath.length);
-        if (archivePath.startsWith('/') || archivePath.startsWith('\\')) {
-          archivePath = archivePath.substring(1);
-        }
-
-        final ArchiveFile archiveFile =
-            ArchiveFile(archivePath, fileBytes.length, fileBytes);
-        archive.addFile(archiveFile);
-      }
-    }
-
-    final List<int> zipData = ZipEncoder().encode(archive)!;
-    await File(zipFilePath).writeAsBytes(zipData);
   }
 
   // Get the initial directory for the file picker
