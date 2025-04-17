@@ -14,25 +14,39 @@ class FontDownloadService {
 
   // Download the complete Google font with all weights and styles
   static Future<String?> downloadGoogleFont(String fontFamily,
-      {BuildContext? context}) async {
+      {BuildContext? context, String? forceSaveDirectory}) async {
     try {
-      // Get initial directory (downloads or last used)
-      String? initialDirectory = await _getInitialDirectory();
+      // Get save directory - either forced or user-selected
+      String? saveDirectory;
 
-      // Show a dialog to let the user pick a save location
-      String? saveDirectory = await _pickSaveDirectory(initialDirectory);
-      if (saveDirectory == null) {
-        // User canceled the folder selection
-        if (context != null && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Download canceled')),
-          );
+      if (forceSaveDirectory != null) {
+        // Use the forced directory (for favorites)
+        saveDirectory = forceSaveDirectory;
+
+        // Make sure the directory exists
+        final Directory directory = Directory(saveDirectory);
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
         }
-        return null;
-      }
+      } else {
+        // Get initial directory (downloads or last used)
+        String? initialDirectory = await _getInitialDirectory();
 
-      // Save this directory as the last used
-      _saveLastDirectory(saveDirectory);
+        // Show a dialog to let the user pick a save location
+        saveDirectory = await _pickSaveDirectory(initialDirectory);
+        if (saveDirectory == null) {
+          // User canceled the folder selection
+          if (context != null && context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Download canceled')),
+            );
+          }
+          return null;
+        }
+
+        // Save this directory as the last used
+        _saveLastDirectory(saveDirectory);
+      }
 
       // Format the font family name for URL (replace spaces with plus signs)
       final String urlFormattedFontName = fontFamily.replaceAll(' ', '+');
@@ -163,7 +177,7 @@ class FontDownloadService {
             content: Text('Font package saved with $downloadedFiles files'),
             action: SnackBarAction(
               label: 'OPEN FOLDER',
-              onPressed: () => _openFolder(saveDirectory),
+              onPressed: () => _openFolder(saveDirectory!),
             ),
           ),
         );

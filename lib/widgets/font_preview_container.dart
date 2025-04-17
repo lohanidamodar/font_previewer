@@ -5,6 +5,7 @@ import 'package:font_previewer/models/font_family.dart';
 import 'package:font_previewer/services/font_download_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FontPreviewContainer extends StatefulWidget {
@@ -106,6 +107,50 @@ class _FontPreviewContainerState extends State<FontPreviewContainer> {
     }
   }
 
+  // Add a font to favorites
+  Future<void> _addToFavorites(FontFamily font) async {
+    try {
+      // Get the favorite fonts directory
+      final sp = await SharedPreferencesWithCache.create(
+          cacheOptions: SharedPreferencesWithCacheOptions());
+      final String? favoriteDir = sp.getString('favourites');
+
+      if (favoriteDir == null || favoriteDir.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Please set a favorites folder in settings first')));
+        return;
+      }
+
+      if (font.isLocal) {
+        // For local fonts, copy the file to favorites
+        final File sourceFile = File(font.path);
+        if (await sourceFile.exists()) {
+          final String fileName = path.basename(font.path);
+          final String destPath = path.join(favoriteDir, fileName);
+          await sourceFile.copy(destPath);
+
+          if (!mounted) return;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Font added to favorites')));
+        }
+      } else {
+        // For Google fonts, download first then add to favorites
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Downloading font to favorites...')));
+
+        // Download the font directly to favorites folder
+        await FontDownloadService.downloadGoogleFont(font.name,
+            context: context, forceSaveDirectory: favoriteDir);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error adding to favorites: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -180,6 +225,12 @@ class _FontPreviewContainerState extends State<FontPreviewContainer> {
                         displayName,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
+                    ),
+                    // Favorite button
+                    IconButton(
+                      icon: const Icon(Icons.favorite_border),
+                      onPressed: () => _addToFavorites(font),
+                      tooltip: 'Add to favorites',
                     ),
                     // Add download button for Google Fonts only
                     if (!font.isLocal)
