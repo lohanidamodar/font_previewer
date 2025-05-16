@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+bundler/.vs/
+bundler/bin/
+bundler/build
+bundler/obj/

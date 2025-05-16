@@ -1,0 +1,19 @@
+#include <windows.h>
+
+// Executable
+// Note: Manifest is handled by the project file, so we don't include it here
+1 RCDATA "../build/windows/x64/runner/Release/font_previewer.exe"
+2 RCDATA "../build/windows/x64/runner/Release/flutter_windows.dll"
+3 RCDATA "../build/windows/x64/runner/Release/url_launcher_windows_plugin.dll"
+4 RCDATA "../build/windows/x64/runner/Release/data/app.so"
+5 RCDATA "../build/windows/x64/runner/Release/data/icudtl.dat"
+
+// Flutter Assets
+10 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/AssetManifest.bin"
+11 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/AssetManifest.json"
+12 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/FontManifest.json"
+13 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/NativeAssetsManifest.json"
+14 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/NOTICES.Z"
+
+// Add additional resources as needed
+// For example, if there are fonts or shader files that need to be included
