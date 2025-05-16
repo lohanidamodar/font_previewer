@@ -6,17 +6,19 @@ We've successfully created a C++ project that can bundle the Flutter Windows rel
 
 - Embeds all required files (EXE, DLLs, assets) as resources
 - Extracts them to a temporary location at runtime
+- Uses the same app icon as the Flutter application
 - Runs the application from this temporary location
 - Cleans up everything when the app exits
 
 ## Project Structure
 
 ```
-g:\dev\projects\font_previewer\src\bundler\
+g:\dev\projects\font_previewer\bundler\
 ├── app.manifest                    # Application manifest file
-├── build_all.bat                   # Script to build Flutter app and bundler
+├── build.bat                       # Primary build script
 ├── build_manual.bat                # Alternative build script
 ├── CMakeLists.txt                  # CMake build configuration
+├── flutter_bundled.h               # Resource extraction mapping
 ├── FlutterBundler.sln              # Visual Studio solution
 ├── FlutterBundler.vcxproj          # Visual Studio project file
 ├── generate_resources.ps1          # Script to auto-generate resources.rc
@@ -24,10 +26,18 @@ g:\dev\projects\font_previewer\src\bundler\
 ├── README.md                       # Documentation
 ├── resource_extractor.cpp          # Implementation of resource extraction
 ├── resource_extractor.h            # Header for resource extraction
+├── resource.h                      # Resource ID definitions
 ├── resources.rc                    # Resource definitions for embedding files
 ├── resources.rc.in                 # Template for resource definitions
+├── SUMMARY.md                      # This summary file
 ├── test_bundled_app.bat            # Script to test the bundled app
 └── VS_INSTRUCTIONS.md              # Additional Visual Studio build instructions
+├── resources/                      # Contains resources like app icon
+│   └── app_icon.ico                # Application icon copied from Flutter project
+└── build/                          # Build output directory
+    └── bin/                        # Compiled binaries
+        └── Release/                # Release build
+            └── FontPreviewer.exe   # Final bundled application
 ```
 
 ## Building and Testing

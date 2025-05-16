@@ -1,4 +1,5 @@
 #include "resource_extractor.h"
+#include "resource.h"
 #include <iostream>
 #include <fstream>
 #include <shlobj.h>
@@ -14,20 +15,21 @@ ResourceExtractor::ResourceExtractor() : moduleHandle(nullptr)
 
     // Define resources to extract
     // Main executable and DLLs
-    resources.push_back({1, "font_previewer.exe", "font_previewer.exe"});
-    resources.push_back({2, "flutter_windows.dll", "flutter_windows.dll"});
-    resources.push_back({3, "url_launcher_windows_plugin.dll", "url_launcher_windows_plugin.dll"});
+    resources.push_back({IDR_EXE_FLUTTER_APP, "font_previewer.exe", "font_previewer.exe"});
+    resources.push_back({IDR_DLL_FLUTTER_WINDOWS, "flutter_windows.dll", "flutter_windows.dll"});
+    resources.push_back({IDR_DLL_URL_LAUNCHER, "url_launcher_windows_plugin.dll", "url_launcher_windows_plugin.dll"});
 
     // Data folder contents
-    resources.push_back({4, "data/app.so", "data/app.so"});
-    resources.push_back({5, "data/icudtl.dat", "data/icudtl.dat"});
+    resources.push_back({IDR_DATA_APP_SO, "data/app.so", "data/app.so"});
+    resources.push_back({IDR_DATA_ICUDTL, "data/icudtl.dat", "data/icudtl.dat"});
 
-    // Flutter assets
-    resources.push_back({10, "data/flutter_assets/AssetManifest.bin", "data/flutter_assets/AssetManifest.bin"});
-    resources.push_back({11, "data/flutter_assets/AssetManifest.json", "data/flutter_assets/AssetManifest.json"});
-    resources.push_back({12, "data/flutter_assets/FontManifest.json", "data/flutter_assets/FontManifest.json"});
-    resources.push_back({13, "data/flutter_assets/NativeAssetsManifest.json", "data/flutter_assets/NativeAssetsManifest.json"});
-    resources.push_back({14, "data/flutter_assets/NOTICES.Z", "data/flutter_assets/NOTICES.Z"});
+    // Flutter assets    resources.push_back({IDR_ASSET_MANIFEST_BIN, "data/flutter_assets/AssetManifest.bin", "data/flutter_assets/AssetManifest.bin"});
+    resources.push_back({IDR_ASSET_MANIFEST_JSON, "data/flutter_assets/AssetManifest.json", "data/flutter_assets/AssetManifest.json"});
+    resources.push_back({IDR_FONT_MANIFEST_JSON, "data/flutter_assets/FontManifest.json", "data/flutter_assets/FontManifest.json"});
+    resources.push_back({IDR_NATIVE_ASSETS_MANIFEST_JSON, "data/flutter_assets/NativeAssetsManifest.json", "data/flutter_assets/NativeAssetsManifest.json"});
+    resources.push_back({IDR_NOTICES_Z, "data/flutter_assets/NOTICES.Z", "data/flutter_assets/NOTICES.Z"});
+    resources.push_back({IDR_MATERIAL_ICONS_FONT, "data/flutter_assets/fonts/MaterialIcons-Regular.otf", "data/flutter_assets/fonts/MaterialIcons-Regular.otf"});
+    resources.push_back({IDR_INK_SPARKLE_SHADER, "data/flutter_assets/shaders/ink_sparkle.frag", "data/flutter_assets/shaders/ink_sparkle.frag"});
 
     // Add more resources as needed
 }

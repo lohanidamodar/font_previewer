@@ -7,6 +7,7 @@ This tool bundles a Flutter Windows application into a single executable file, s
 - Creates a single portable EXE file
 - Bundles all DLLs, assets, and resources
 - Extracts resources to a temporary location at runtime
+- Uses the same app icon as the Flutter application
 - Cleans up temporary files when the application exits
 
 ## Building the Bundler
@@ -19,11 +20,11 @@ This tool bundles a Flutter Windows application into a single executable file, s
 
 ### Option 1: Automated Build (Recommended)
 
-Run the `build_all.bat` script to build both the Flutter app and bundler in one go:
+Run the `build.bat` script to build the bundler after building your Flutter app:
 
 ```
-cd src\bundler
-build_all.bat
+cd bundler
+build.bat
 ```
 
 ### Option 2: Manual Build Steps

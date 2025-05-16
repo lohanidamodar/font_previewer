@@ -2,6 +2,8 @@
 #include <windows.h>
 #include <shlobj.h>
 #include "resource_extractor.h"
+#include "resource.h"
+#include "flutter_bundled.h"
 
 // Forward declaration for console attachment in debug mode
 void AttachConsole();

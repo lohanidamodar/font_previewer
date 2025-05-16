@@ -1,19 +1,27 @@
 #include <windows.h>
-
+#include "resource.h"
+// Application Icon
+IDI_APP_ICON            ICON                    "resources\\app_icon.ico"
 // Executable
 // Note: Manifest is handled by the project file, so we don't include it here
-1 RCDATA "../build/windows/x64/runner/Release/font_previewer.exe"
-2 RCDATA "../build/windows/x64/runner/Release/flutter_windows.dll"
-3 RCDATA "../build/windows/x64/runner/Release/url_launcher_windows_plugin.dll"
-4 RCDATA "../build/windows/x64/runner/Release/data/app.so"
-5 RCDATA "../build/windows/x64/runner/Release/data/icudtl.dat"
+
+// Main FilesIDR_DLL_FLUTTER_WINDOWS RCDATA "flutter_windows.dll"
+IDR_EXE_FLUTTER_APP RCDATA "font_previewer.exe"
+IDR_DLL_URL_LAUNCHER RCDATA "url_launcher_windows_plugin.dll"
+
+// Data Folder Files
+IDR_DATA_APP_SO RCDATA "data/app.so"
+IDR_DATA_ICUDTL RCDATA "data/icudtl.dat"
 
 // Flutter Assets
-10 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/AssetManifest.bin"
-11 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/AssetManifest.json"
-12 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/FontManifest.json"
-13 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/NativeAssetsManifest.json"
-14 RCDATA "../build/windows/x64/runner/Release/data/flutter_assets/NOTICES.Z"
+IDR_ASSET_MANIFEST_BIN RCDATA "data/flutter_assets/AssetManifest.bin"
+IDR_ASSET_MANIFEST_JSON RCDATA "data/flutter_assets/AssetManifest.json"
+IDR_FONT_MANIFEST_JSON RCDATA "data/flutter_assets/FontManifest.json"
+IDR_NATIVE_ASSETS_MANIFEST_JSON RCDATA "data/flutter_assets/NativeAssetsManifest.json"
+IDR_NOTICES_Z RCDATA "data/flutter_assets/NOTICES.Z"
 
-// Add additional resources as needed
-// For example, if there are fonts or shader files that need to be included
+// Note: 
+// Folders like fonts and shaders are handled by the code directly
+// by copying the entire directory structure at runtime.
+// If your app has additional critical files that need to be embedded,
+// add them here with sequential resource IDs.

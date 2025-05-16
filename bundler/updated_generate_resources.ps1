@@ -131,6 +131,9 @@ $resourceContent += @"
 // Main Files
 "@
 
+# Start resource ID counter for any additional resources
+$resourceId = 1000  # Start from 1000 for any additional resources beyond those defined in resource.h
+
 # Function to add a file to the resources
 function Add-Resource {
     param (
@@ -195,6 +198,12 @@ function Scan-Directory-Recursively {
     }
 }
 
+# Get all the main files in the release folder (non-recursive)
+Write-Host "Scanning root folder for executable and DLLs..."
+$exeFound = $false
+$flutterDllFound = $false
+$urlLauncherFound = $false
+
 Get-ChildItem -Path $ReleasePath -File | ForEach-Object {
     $fileName = $_.Name.ToLower()
     if ($fileName -eq "font_previewer.exe") {
@@ -235,10 +244,11 @@ if (Test-Path "$ReleasePath\data") {
             Add-Resource -FilePath $_.FullName
         }
     }
-      # Add flutter_assets files
-    $resourceContent += "`n// Flutter Assets`n"
+
+    # Add flutter_assets files
     if (Test-Path "$ReleasePath\data\flutter_assets") {
         Write-Host "Scanning flutter_assets folder..."
+        $resourceContent += "`n// Flutter Assets`n"
         $assetManifestBinFound = $false
         $assetManifestJsonFound = $false
         $fontManifestJsonFound = $false
@@ -270,6 +280,21 @@ if (Test-Path "$ReleasePath\data") {
             else {
                 Add-Resource -FilePath $_.FullName
             }
+        }
+        
+        # Scan fonts folder recursively
+        if (Test-Path "$ReleasePath\data\flutter_assets\fonts") {
+            Scan-Directory-Recursively -Directory "$ReleasePath\data\flutter_assets\fonts" -SectionHeader "Font Files"
+        }
+        
+        # Scan shaders folder recursively
+        if (Test-Path "$ReleasePath\data\flutter_assets\shaders") {
+            Scan-Directory-Recursively -Directory "$ReleasePath\data\flutter_assets\shaders" -SectionHeader "Shader Files"
+        }
+        
+        # Scan any other assets folders recursively
+        if (Test-Path "$ReleasePath\data\flutter_assets\assets") {
+            Scan-Directory-Recursively -Directory "$ReleasePath\data\flutter_assets\assets" -SectionHeader "Asset Files"
         }
     }
 }
